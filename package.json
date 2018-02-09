@@ -1,0 +1,21 @@
+{
+  "name": "ola",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js -e js, hbs, css",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "express-handlebars": "^3.0.0",
+    "mongodb": "^3.0.2",
+    "mongoose": "^5.0.3",
+    "path": "^0.12.7",
+    "redis": "^2.8.0"
+  }
+}
