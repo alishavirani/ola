@@ -3,6 +3,7 @@ const customer = require('./../models/customer').schema;
 const db = require('./../helpers/dbWrapper');
 
 module.exports.updateDriver = (queryObj, updateObj, callback) => {
+    console.log('Inside controller updateDriver');
     db.put(driver, queryObj, updateObj, (err, driver) => {
         if(err) {
             console.log('Error in CONTROLLER', err);
@@ -48,6 +49,7 @@ module.exports.addCustomer = (insertObj, callback) => {
 };
 
 module.exports.getDrivers = (queryObj, callback) => {
+    console.log('Inside controller getAll');
     db.getAll(driver, queryObj, null, null, (err, drivers) => {
         if(err) {
             console.log('Error in fetching drivers in CONTROLLER', err);

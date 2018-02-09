@@ -4,20 +4,11 @@ const driver = require('./driver').schema;
 let Schema = mongoose.Schema;
 
 let customer = new Schema({
-    custId: {
-        type: Number,
-        ref: 'driver.rides'
-    },
+    custId: Number,
     rides: [{
-        rideId: {
-            type: Number,
-            ref: 'driver.rides'
-        },
+        rideId: Number,
         duration: Number,
-        driverID: {
-            type: Number,
-            ref: 'driver'
-        }
+        driverID: Number,
     }]
 },{collection: 'customer'});
 

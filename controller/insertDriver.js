@@ -3,7 +3,7 @@ const driver = require('./../models/driver').schema;
 
 module.exports.addDriver = (driverData, callback) => {
    
-    console.log('printing driverData in CONTROLLER--', driverData);
+    //console.log('printing driverData in CONTROLLER--', driverData);
 
  
     db.set(driver, driverData, (err, driver) => {

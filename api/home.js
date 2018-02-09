@@ -14,7 +14,7 @@ router.post('/', (req, res) => {
     let drivers = req.body.driver;
     console.log('Printing no of drivers', drivers);
     var numDriver = Number(drivers);
-    console.log('Typeof numDriver', typeof numDriver);
+    //console.log('Typeof numDriver', typeof numDriver);
 
     let driverInfo = {
         driverID: Date.now().toString()
@@ -26,7 +26,7 @@ router.post('/', (req, res) => {
 
         //call to controller
         driver.addDriver(driverInfo, (err, result) => {
-            console.log('Inside API..Printing result', result);
+            // console.log('Inside API..Printing result', result);
             if(err) {
                 console.log('Error in API---',err);
                 return;
