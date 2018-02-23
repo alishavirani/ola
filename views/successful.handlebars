@@ -1,7 +1,31 @@
 <h3 align="center">BOOKING SUCCESSFUL</h3>
-
+<script>
+    function displayTable() {
+        var driverTable = document.getElementById("drivers");
+        driverTable.style.display = "table";
+    }
+</script>
 <form id="success" method="get" action="/cabBooking">
-<div class="form-group">
-<button type="submit" id="new-booking" class="btn btn-primary">Click to book another Cab</button>
-</div>
+    <div class="form-group">
+        <button type="submit" id="new-booking" class="btn btn-primary">Click to book another Cab</button>
+    </div>
 </form>
+<br /><br />
+
+<div>
+    <button class="btn btn-primary" onclick="displayTable()">Generate Reports</button>
+    <table style="width:100%; display:none; border: 2px solid" id="drivers">
+        <tr>
+            <th>DRIVER ID</th>
+            <th>RIDE ID</th>
+            <th>DURATION</th>
+            <th>CUSTOMER ID</th>
+        </tr>
+        <tr>
+            <th>{{driverID}}</th>
+            <th>{{rideId}}</th>
+            <th>{{duration}}</th>
+            <th>{{custId}}</th>
+        </tr>
+    </table>
+</div>

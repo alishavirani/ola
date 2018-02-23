@@ -1,8 +1,8 @@
-const express = require('express');
+const init = require('./../server/init');
 // const client = require('./../server');
 const driver = require('./../controller/insertDriver');
 
-const router = express.Router();
+const router = init.express.Router();
 
 router.get('/', (req, res) => {
     res.render('home');
@@ -11,6 +11,8 @@ router.get('/', (req, res) => {
 router.post('/', (req, res) => {
 
     console.log('Inside POST of API');
+    console.log('REQ.BODY =>', req.body);
+    
     let drivers = req.body.driver;
     console.log('Printing no of drivers', drivers);
     var numDriver = Number(drivers);

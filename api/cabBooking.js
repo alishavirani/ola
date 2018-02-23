@@ -1,142 +1,343 @@
-const express = require('express');
+const init = require('./../server/init');
 const cab = require('./../controller/cab');
-const redis = require('redis');
+// const app = require('./../server');
+const router = init.express.Router();
+// console.log('App =>', app);
+// console.log('depInject => ', app.get(connections));
+let durationArray = []; 
 
-let client = redis.createClient();
 
-const router = express.Router();
 
 router.get('/', (req, res) => {
     res.render('cabBooking');
 });
 
 router.post('/', (req, res) => {
-        console.log('Inside POST of API');
-        let time = req.body.time;
-        console.log('time ', time);
-        let duration = Number(time);
-        // console.log('typeof duration ', typeof duration);
-        let timeInSec = time * 60;
-        let timeInMs = timeInSec * 1000;
-        let randomRideNo = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
-        let custRandNo = Math.floor(Math.random() * (200 - 100 + 1)) + 100;
-        let resultArray = [];
-        // console.log('isArray resultArray top', Array.isArray(resultArray));
+    console.log('Inside POST of API');
+    let time = req.body.time;
+    console.log('time ', time);
+    let duration = Number(time);
+    // console.log('typeof duration ', typeof duration);
+    let timeInSec = time * 60;
+    let timeInMs = timeInSec * 1000;
+    let randomRideNo = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
+    let custRandNo = Math.floor(Math.random() * (200 - 100 + 1)) + 100;
+    durationArray.push(duration);
 
-        let query = {
-            status: false
+    let query = {
+        status: false
+    }
+
+    cab.getDrivers(query, (err, result) => {
+        if (err) {
+            console.log('Error in fetching docs in API', err);
+            return;
         }
+        console.log('Docs in API, RESULT', result);
+        console.log('result[0].==', result[0]);
 
-        cab.getDrivers(query, (err, result) => {
-            if (err) {
-                console.log('Error in fetching docs in API', err);
-                return;
-            }
-            console.log('Docs in API, RESULT', result);
-            // console.log('typeof result', typeof result);
-            resultArray = result;
-            console.log('Printing resultArray-----', resultArray);
-            console.log('is array, resultArray ???', Array.isArray(resultArray));
-            
-        });
-        // console.log('length of resultArray??', resultArray.length);
+        let queryObj = {
+            driverID: result[0].driverID,
+            status: false
+        };
 
-        for (let i = 0; i < resultArray.length; i++) {
-            console.log('Inside for loop');
+        let ridesUpd = {
+            rideId: randomRideNo,
+            duration: timeInSec,
+            custId: custRandNo
+        };
 
-            console.log('resultArray[i].==', resultArray[i]);
+        let ridesIns = {
+            rideId: randomRideNo,
+            duration: timeInSec,
+            driverID: result[0].driverID
+        };
 
-            let queryObj = {
-                driverID: resultArray[i].driverID,
-                status: false
-            };
+        let updateObj = {
+            status: true,
+            rides: []
+        };
+        updateObj.rides.push(ridesUpd);
 
-            let ridesUpd = {
-                rideId: randomRideNo,
-                duration: timeInSec,
-                custId: custRandNo
-            };
+        let insertObj = {
+            custId: custRandNo,
+            rides: []
+        };
+        insertObj.rides.push(ridesIns);
 
-            let ridesIns = {
-                rideId: randomRideNo,
-                duration: timeInSec,
-                driverID: resultArray[i].driverID
-            };
-
-            let updateObj = {
-                status: true,
-                rides: []
-            };
-            updateObj.rides.push(ridesUpd);
-
-            let insertObj = {
-                custId: custRandNo,
-                rides: []
-            };
-            insertObj.rides.push(ridesIns);
-
-            //call to controller
+        let updateDriver = new Promise((resolve, reject) => {
             cab.updateDriver(queryObj, updateObj, (err, result) => {
                 if (err) {
-                    console.log('Printing error in API', err);
+                    reject(console.log('Printing error in API', err));
                     return;
                 }
                 if (!result) {
-                    console.log('No result obtained in API');
+                    reject(console.log('No result obtained in API'));
                     return;
                 }
-                console.log('SUCEESS IN API, Result obj->  ', result);
-                // alert('Booking successful');
+                resolve(console.log('SUCEESS IN API, Result obj->  ', result));
+                return;
             });
 
-            let insCust = setTimeout(function () {
-                cab.addCustomer(insertObj, (err, result) => {
-                    if (err) {
-                        console.log('Error in API Cust-->', err);
-                        return;
+        });
+
+        let insCustomer = new Promise((resolve, reject) => {
+            cab.addCustomer(insertObj, (err, result) => {
+                if (err) {
+                    reject(console.log('Error in API Cust-->', err));
+                    return;
+                }
+                if (!result) {
+                    reject(console.log('No result obtained in API Cust'));
+                    return;
+                }
+                resolve(console.log('SUCCESS IN API, Result obj Cust-->', result));
+                return;
+            });
+        });
+
+        // let trueQuery = {
+        //     status: true
+        // };
+
+
+        let tableObject = {
+            driverID: result[0].driverID,
+            rideId: randomRideNo,
+            duration: duration,
+            custId: custRandNo
+        };
+
+        let condition = new Promise((resolve, reject) => {
+            let minDuration = {};
+
+            cab.getDrivers(null, (err, result) => {
+                console.log('Bringing results from controller--> ', result);
+                if (err) {
+                    console.log('Error in API getAvailableDrivers-->', err);
+                    return;
+                }
+                if (!result) {
+                    console.log('No result obtained in API getAvailableDrivers');
+                    return;
+                }
+                console.log('DOCS in getAvaialbleDrivers--------> ', result);
+                
+                // for(let i = 0; i < result.length; i++) {
+                                      
+                //     for(let j = 0; j < durationArray.length; i++ ) {
+                //         durationArray.push(result[i].rides[j].duration);
+                //     }
+                //     //console.log('DURATION ARRAY[i] => ', durationArray[i]);    
+                // }
+                console.log('DURATION ARRAY => ', durationArray);
+
+                minDuration = {
+                    time: durationArray[0]
+                };
+                console.log('MIN DURATION BEFORE LOOP => ', minDuration);
+
+                for(let i = 0; i < durationArray.length; i++) {
+                    if(minDuration.time > durationArray[i]) {
+                        minDuration.time = durationArray[i];
                     }
-                    if (!result) {
-                        console.log('No result obtained in API Cust');
-                        return;
-                    }
-                    console.log('SUCCESS IN API, Result obj Cust-->', result);
-                });
-            }, 500);
+                }
+                console.log('MIN DURATION AFTER LOOP => ', minDuration.time);
+                
+                // result.forEach(function (rides) {
+                //     for (let i = 0; i < rides.length; i++) {
+                //         minDuration = rides[i].duration;
+                //         if (rides[i].duration < minDuration) {
+                //             minDuration = rides[i].minDuration;
+                //         }
+                //     }
+                // });
+             });
 
-            let successMsg = {
-                text: "Booking successful"
-            };
-            res.render('successful', successMsg);
-
-
-            let queryObj2 = {
-                driverID: 1,
-                status: true,
+            console.log('Printing result array----', result);
+            console.log('Printing result array length----', result.length);
+            if (result.length <= 1 || !result) {
+                reject(res.render('options', minDuration));
+                return;
             }
+            resolve(res.render('successful', tableObject));
+            return;
+        });
 
-            let newObj = {
-                status: false,
-            };
+        Promise.all([updateDriver, insCustomer, condition]).then((result) => {
+            console.log('SUCCESS: ', result);
+        }).catch((reason) => {
+            console.log('FAILURE:', reason);
+        });
 
-            function myFunc() {
-                console.log('Inside myFunc');
+        // let getAvailDrivers = new Promise((resolve, reject) => {
+        //     console.log('Inside api of getAvailDrivers');
+        //     let minDuration;
+        //     cab.getDrivers(null, (err, result) => {
+        //         console.log('Bringing results from controller--> ', result);
+        //         if (err) {
+        //             reject(console.log('Error in API getAvailableDrivers-->', err));
+        //             return;
+        //         }
+        //         if (!result) {
+        //             reject(console.log('No result obtained in API getAvailableDrivers'));
+        //             return;
+        //         }
 
+        //         console.log('DOCS in getAvaialbleDrivers--------> ', result);
+        //         result.forEach(function (rides) {
+        //             for (let i = 0; i < rides.length; i++) {
+        //                 minDuration = rides[i].duration;
+        //                 if (rides[i].duration < minDuration) {
+        //                     minDuration = rides[i].minDuration
+        //                 }
+        //             }
+        //         });
+        //         console.log('MIN DURATION =>', minDuration);
+        //         resolve(res.render('options', {minDuration}));
+        //         return;
+        //     });
+        // });
+
+        // getAvailDrivers.then((result) => {
+        //     console.log('PROMISE FULFILLED GET AVAIL DRIV, RESULT => ', result);       
+        // }, (reason) => {
+        //     console.log('PROMISE REJECTED IN GET AVAILABLE DRIVERS, REASON =>', reason);
+        // });
+
+        let newObj = {
+            status: false,
+        };
+
+        let queryObj2 = {
+            driverID: result[0].driverID,
+            status: true,
+        }
+
+        let updateDriverTimeoutPromise = new Promise((resolve, reject) => {
+            let updateDriverTimeout = setTimeout(() => {
                 cab.updateDriverTimeout(queryObj2, newObj, (err, result) => {
                     if (err) {
-                        console.log('Error in API, in update driver', err);
-                        return;
+                        reject('Error in API, in update driver', err);
                     }
                     if (!result) {
-                        console.log('No result obtained in API in update driver');
-                        return;
+                        reject('No result obtained in API in update driver');
                     }
-                    console.log('SUCCESS IN API, Result obj in update driver->  ', result);
+                    resolve('SUCCESS IN API, Result obj in update driver->  ', result);
                 });
+            }, timeInMs);
+        });
 
+        updateDriverTimeoutPromise.then((result) => {
+            console.log('SUCCESS: Data updated after timeout, result=> ', result);
+        }, (reason) => {
+            console.log('FAILURE: Failure in updation after timeout, reason => ', reason);
+        });
 
-                setTimeout(myFunc, timeInMs);
-            }
-        };
+    });
 });
+
+
+
+// router.post('/', (req, res) => {
+//     console.log('Inside POST of API');
+//     let time = req.body.time;
+//     console.log('time ', time);
+//     let duration = Number(time);
+//     // console.log('typeof duration ', typeof duration);
+//     let timeInSec = time * 60;
+//     let timeInMs = timeInSec * 1000;
+//     let randomRideNo = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
+//     let custRandNo = Math.floor(Math.random() * (200 - 100 + 1)) + 100;
+//     let driversArray;
+
+//     let query = {
+//         status: false
+//     }
+
+//     let getDrivers = new Promise((resolve, reject) => {
+//         cab.getDrivers(query, (err, drivers) => {
+//             if (err) {
+//                 reject(console.log('ERROR in API GET DRIVERS => ', err));
+//             }
+//             if (!drivers) {
+//                 reject(console.log('NO DRIVERS IN API GET DRIVERS'));
+//             }
+
+//             resolve(console.log('DRIVERS IN API => ', drivers));
+//             console.log('DRIVERS"S LENGTH => ', drivers.length);
+//            // driversArray = JSON.parse(JSON.stringify(drivers));
+//             driversArray = drivers.slice(0);
+//             console.log('DRIVERS ARRAY => ', driversArray);
+//             console.log('TYPEOF DRIVERSARRAY => ', typeof driversArray);
+//             console.log('ISARRAY DRIVERSARRAY?? => ', Array.isArray(driversArray));
+//         });
+//     }); 
+
+//     let queryObj = {
+//         driverID: driversArray[0].driverID,
+//         status: false
+//     };
+
+//     let ridesUpd = {
+//         rideId: randomRideNo,
+//         duration: timeInSec,
+//         custId: custRandNo
+//     };
+
+//     let updateObj = {
+//         status: true,
+//         rides: []
+//     };
+//      updateObj.rides.push(ridesUpd);
+
+//     let updateDrivers = new Promise((resolve, reject) => {
+//         cab.updateDriver(queryObj, updateObj, (err, updatedDriver) => {
+//             if (err) {
+//                 reject(console.log('ERROR in API UPDATE DRIVERS => ', err));
+//             }
+//             resolve(console.log('UPDATED DRIVERS, IN API => ', updatedDriver));
+//         });
+//     });
+
+//     let ridesIns = {
+//         rideId: randomRideNo,
+//         duration: timeInSec,
+//         driverID: driversArray[0].driverID
+//     };
+
+//     let insertObj = {
+//         custId: custRandNo,
+//         rides: []
+//     };
+//     insertObj.rides.push(ridesIns);
+
+//     let insertCustomer = new Promise((resolve, reject) => {
+//         cab.addCustomer(insertObj, (err, customer) => {
+//             if (err) {
+//                 reject(console.log('ERROR in API INSERT CUSTOMER => ', err));
+//             }
+//             if (!customer) {
+//                 reject(console.log('NO CUSTOMERS ADDED , IN API ADD CUSTOMERS'));
+//             }
+//             resolve(console.log('ADDED CUSTOMER, IN API => ', customer));
+//         });
+//     });
+
+
+//     Promise.all([getDrivers, updateDrivers, insertCustomer]).then((result) => {
+//         console.log('RESULT AFTER RESOLVING PROMISES => ', result);
+//         console.log('Printing DRIVERS ARRAY => ', driversArray);
+//         console.log('Printing DRIVERS ARRAY.LENGTH =>', driversArray.length);
+//         if (driversArray.length <= 1 || !driversArray) {
+//             res.render('options');
+//             return;
+//         }
+//         res.render('successful');
+//     });
+
+// });
+
+
 
 module.exports = router;

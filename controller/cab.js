@@ -5,7 +5,7 @@ const db = require('./../helpers/dbWrapper');
 module.exports.updateDriver = (queryObj, updateObj, callback) => {
     console.log('Inside controller updateDriver');
     db.put(driver, queryObj, updateObj, (err, driver) => {
-        if(err) {
+        if (err) {
             console.log('Error in CONTROLLER', err);
             callback(err, null);
             return;
@@ -19,10 +19,10 @@ module.exports.updateDriver = (queryObj, updateObj, callback) => {
 module.exports.updateDriverTimeout = (updateObj, newObj, callback) => {
     console.log('updateObj in CONTROLLER', updateObj);
     console.log('newObj in CONTROLLER', newObj);
-    
+
     db.put(driver, updateObj, newObj, (err, driver) => {
         console.log('Obtaining results from dbWrapper', driver);
-        if(err) {
+        if (err) {
             console.log('Error in CONTROLLER timeout', err);
             callback(err, null);
             return;
@@ -31,13 +31,13 @@ module.exports.updateDriverTimeout = (updateObj, newObj, callback) => {
         callback(null, driver);
         return;
     });
-}
+};
 
 module.exports.addCustomer = (insertObj, callback) => {
     console.log('Inside controller addCust');
 
     db.set(customer, insertObj, (err, customer) => {
-        if(err) {
+        if (err) {
             console.log('Error in CONTROLLR addCust', err);
             callback(err, null);
             return;
@@ -51,7 +51,21 @@ module.exports.addCustomer = (insertObj, callback) => {
 module.exports.getDrivers = (queryObj, callback) => {
     console.log('Inside controller getAll');
     db.getAll(driver, queryObj, null, null, (err, drivers) => {
-        if(err) {
+        if (err) {
+            console.log('Error in fetching drivers in CONTROLLER', err);
+            callback(err, null);
+            return;
+        }
+        console.log('Driver docs in CONTROLLER', drivers);
+        callback(null, drivers);
+        return;
+    });
+};
+
+module.exports.getDrivers = (queryObj, callback) => {
+    console.log('Inside controller getAll Driver');
+    db.getAll(driver, queryObj, null, null, (err, drivers) => {
+        if (err) {
             console.log('Error in fetching drivers in CONTROLLER', err);
             callback(err, null);
             return;
