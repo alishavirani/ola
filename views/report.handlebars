@@ -1,0 +1,81 @@
+<h3>Reports</h3>
+<h4>DRIVERS</h4>
+
+{{#if showDrivers}}
+    <ul>
+        {{#each showDrivers}}
+            <li>DRIVER ID: {{this.driverID}}</li>
+            <li>RIDE ID: {{this.rideId}}</li>
+            <li>DURATION: {{this.duration}} sec</li>
+            <li>CUST ID: {{this.custId}}</li>
+            <br /><br />
+        {{/each}}
+    </ul>
+{{else}}
+    <p>
+        <em>Sorry, There are no drivers</em>
+    </p>
+{{/if}}
+<br /><br />
+
+<h4>CUSTOMERS</h4>
+{{#if showCustomers}}
+    <ul>
+        {{#each showCustomers}}
+            <li>CUST ID: {{this.custID}}</li>
+            <li>RIDE ID: {{this.rideId}}</li>
+            <li>DURATION: {{this.duration}} sec</li>
+            <li>DRIVER ID: {{this.driverID}}</li>
+            <br /><br />
+        {{/each}}
+    </ul>
+{{else}}
+    <p>
+        <em>Sorry, There are no customers</em>
+    </p>      
+{{/if}}
+
+ {{!--
+<table style="width:100%; border: 2px solid" id="drivers">
+    <tr>
+        <th>DRIVER ID</th>
+        <th>RIDE ID</th>
+        <th>DURATION</th>
+        <th>CUSTOMER ID</th>
+    </tr>
+    <tr>
+        {{#if showDrivers}} {{#each showDrivers}}
+        <td>{{this.driverID}}</td>
+        <td>{{this.rideId}}</td>
+        <td>{{this.duration}}</td>
+        <td>{{this.custId}}</td>
+        {{/each}} {{else}}
+        <p>
+            <em>Sorry, There are no drivers</em>
+        </p>
+        {{/if}}
+
+    </tr>
+</table>
+
+<table style="width:100%; border: 2px solid" id="customers">
+    <tr>
+        <th>CUSTOMER ID</th>
+        <th>RIDE ID</th>
+        <th>DURATION</th>
+        <th>DRIVER ID</th>
+    </tr>
+    <tr>
+        {{#if showCustomers}} {{#each showCustomers}}
+        <td>{{this.custId}}</td>
+        <td>{{this.rideId}}</td>
+        <td>{{this.duration}}</td>
+        <td>{{this.driverID}}</td>
+        {{/each}} {{else}}
+        <p>
+            <em>Sorry, There are no customers</em>
+        </p>
+        {{/if}}
+
+    </tr>
+</table> --}}

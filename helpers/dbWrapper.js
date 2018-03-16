@@ -71,3 +71,20 @@ module.exports.getAll = function fetchAll(schema, query, fields, options, callba
       return;
     });
 };
+
+module.exports.countDocs = function count(schema, query, callbackvalue) {
+    //console.log('QUERY!!!!! ', query);
+      var objmodel = db.model(schema.options.collection, schema);
+      objmodel.count(query).lean().exec(function(err, result) {
+          callbackvalue(err, result);
+          return;
+      });
+  };
+  
+  module.exports.findUpdate = function findOneAndUpdate(schema, query, json, options, callbackvalue) {
+      var objmodel = db.model(schema.options.collection, schema);
+      objmodel.findOneAndUpdate(query, json, options).lean().exec(function(err, result) {
+          callbackvalue(err, result);
+          return;
+      });
+  };

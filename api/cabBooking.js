@@ -135,6 +135,8 @@ router.post('/', (req, res) => {
                 minDuration = {
                     time: durationArray[0]
                 };
+
+                console.log('MinDuration.time =>=>=> ', minDuration.time);
                 console.log('MIN DURATION BEFORE LOOP => ', minDuration);
 
                 for(let i = 0; i < durationArray.length; i++) {
@@ -157,6 +159,7 @@ router.post('/', (req, res) => {
             console.log('Printing result array----', result);
             console.log('Printing result array length----', result.length);
             if (result.length <= 1 || !result) {
+                console.log('Min Duration.time => ', minDuration.time);
                 reject(res.render('options', minDuration));
                 return;
             }
@@ -341,3 +344,78 @@ router.post('/', (req, res) => {
 
 
 module.exports = router;
+
+// db.employeeData.find().forEach(function(element){
+//     element.DOJ = element.DOJ.replace("1911", "2011");
+//     db.employeeData.save(element);
+//    })
+
+
+// db.employeeData.find().forEach(function(element){  
+//        var isoDate = element.DOJ;    
+//         var isoString = isoDate.toISOString();    
+//          element.DOJ = isoString;   
+//            db.employeeData.save(element);  
+//           }})
+
+// db.employeeData.find().forEach(function(element){
+//     element.DOJ = new Date(element.DOJ);
+//     db.employeeData.save(element);
+//    })
+
+
+
+
+
+
+// router.put('/', (req, res) => {
+//     var query = {
+//         squad: req.body.squad
+//     };
+
+//     tribeInfo.getAllTribeInfo(query, (err, squad) => {
+//         if (err) {
+//             console.log('ERROR IN API GET ALL DOCS FROM A SQUAD => ', err);
+//             return;
+//         }
+//         if (!squad) {
+//             console.log('NO SQUAD FOUND');
+//             return;
+//         }
+//         console.log('DOCS FROM A SQUAD IN API => ', squad);
+
+
+//         var pos;
+//         for (var i = 0; i < squad[0].monthlyProgress.length; i++) {
+//             if (req.body.time === squad[0].monthlyProgress[i].time) {
+//                 console.log('i =>', i);
+//                 console.log('req.body.time === squad[0].monthlyProgress[i].time', req.body.time === squad[0].monthlyProgress[i].time)
+//                 pos = i;
+//                 break;
+//             }
+//         }
+//         console.log('POS => ', pos);
+//         console.log('squad[0].monthlyProgress[pos].time =>', squad[0].monthlyProgress[pos].time);
+
+//         var oldQuery = {
+//             squad: req.body.squad,
+//             time: squad[0].monthlyProgress[pos].time
+//         };
+
+//         // squad[0].monthlyProgress[pos].score = req.body.score;
+//         // console.log('squad[0].monthlyProgress[pos].score', squad[0].monthlyProgress[pos].score);
+
+//         var newQuery = {
+//             score: req.body.score
+//         }
+
+//         tribeInfo.updateTribe(oldQuery, newQuery, (err, result) => {
+//             if (err) {
+//                 console.log('ERROR IN API UPDATE SCORES OF A SQUAD => ', err);
+//                 return;
+//             }
+//             console.log('UPDATED SCORES IN A SQUAD IN API => ', result);
+//         });
+
+//     });
+// });
