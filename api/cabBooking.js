@@ -419,3 +419,52 @@ module.exports = router;
 
 //     });
 // });
+
+// module.exports.getAllTribeInfo = (query, callback) => {
+//     var thisQuery = {
+//         squad: query.squad
+//     }
+//     db.get(tribeScores, thisQuery, (err, tribe) => {
+//         return new Promise((resolve, reject) => {
+//             if(err) {
+//                 reject(console.log('ERR IN FINDING TRIBE => ', err));
+//                 callback(err, null);
+//             }
+//             if(!tribe) {
+//                 reject(console.log('TRIBE NOT FOUND IN CONTROLLER'));
+//                 callback(err, null);
+//             }
+//             resolve(console.log('FOUND TRIBE IN CONTROLLER => ', tribe));
+//             callback(null, tribe);
+            
+//         }).then((result) => {
+//             console.log('TRIBE => ', tribe);
+
+//             var query = {
+//                 squad: tribe.squad,
+//                 time: tribe.monthlyProgress.time
+//             }
+
+//             var updQuery = {
+//                 score: tribe.monthlyProgress.score
+//             }
+
+//             db.put(tribeScores, query, updQuery, (err, result) => {
+//                 console.log('INSIDE DB.PUT')
+//                 if(err) {
+//                     console.log('ERROR IN UPDATING SCORES CONTROLLER => ', err);
+//                     callback(err, null);
+//                     return;
+//                 }
+//                 console.log('UPDATED SCORES FROM CONTROLLER => ', result);                
+//                 callback(null, result);
+//             })
+//             console.log('RESULT => ', result);
+//         }, (reason) => {
+//             console.log('REASON => ', reason);
+//         });
+        
+//     });
+
+// };
+
